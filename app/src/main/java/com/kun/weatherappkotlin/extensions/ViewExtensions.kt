@@ -20,6 +20,6 @@ fun View.slideExit() {
 }
 
 fun View.slideEnter() {
-    if (translationX < 0f) animate().translationY(0f)
+    if (translationY < 0f) animate().translationY(0f)
 }
 
