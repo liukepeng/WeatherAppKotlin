@@ -25,8 +25,8 @@ interface ToolbarManager {
         }
 
     fun initToolbar() {
-        toolbar.inflateMenu(R.menu.menu_main)
-        toolbar.setOnMenuItemClickListener {
+        toolbar?.inflateMenu(R.menu.menu_main)
+        toolbar?.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_setting -> toolbar.ctx.startActivity<SettingsActivity>()
                 else -> App.instance.toast("Unkown option")

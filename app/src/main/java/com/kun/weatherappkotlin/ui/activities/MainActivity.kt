@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.Toolbar
 import com.kun.weatherappkotlin.R
-import com.kun.weatherappkotlin.domain.model.Forecast
+import com.kun.weatherappkotlin.domain.commands.RequestForecastCommand
 import com.kun.weatherappkotlin.domain.model.ForecastList
 import com.kun.weatherappkotlin.extensions.DelegatesExt
 import com.kun.weatherappkotlin.ui.adapters.ForecastListAdapter
@@ -13,8 +13,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.coroutines.experimental.bg
-import org.jetbrains.anko.custom.async
-import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivity
 
@@ -22,7 +20,7 @@ import org.jetbrains.anko.startActivity
  * @author liukepeng
  * @date 2019/1/5
  */
-class MainActivity : AppCompatActivity(), ToolbarManager{
+class MainActivity : AppCompatActivity(), ToolbarManager {
 
     private val zipCode: Long by DelegatesExt.preference(this, SettingsActivity.ZIP_CODE,
             SettingsActivity.DEFAULT_ZIP)
@@ -43,8 +41,8 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
     }
 
     private fun loadForecast() = async(UI) {
-        val result = bg {  }
-
+        val result = bg {  RequestForecastCommand(zipCode).execute()}
+        updateUI(result.await())
     }
 
     private fun updateUI(weekForecast: ForecastList) {
@@ -52,6 +50,8 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
             startActivity<DetailActivity>(DetailActivity.ID to it.id,
                 DetailActivity.CITY_NAME to weekForecast.city)
         }
+        forecastList.adapter = adapter
+        toolbarTitle = "${weekForecast.city} (${weekForecast.country})"
     }
 
 }

@@ -1,5 +1,6 @@
 package com.kun.weatherappkotlin.extensions
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import kotlin.reflect.KProperty
@@ -38,6 +39,7 @@ class Preference<T>(private val context: Context, private val name: String,
         putPreference(name, value)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun findPreference(name: String, default: T): T = with(prefs) {
         val res: Any = when (default) {
             is Long -> getLong(name, default)
@@ -50,6 +52,7 @@ class Preference<T>(private val context: Context, private val name: String,
         res as T
     }
 
+    @SuppressLint("CommitPrefEdits")
     private fun  putPreference(name: String, value: T) = with(prefs.edit()) {
         when(value) {
             is Long -> putLong(name, value)
